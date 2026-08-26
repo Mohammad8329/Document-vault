@@ -13,6 +13,11 @@ Format:
 - Alternatives considered: ...
 ```
 
+## [2026-08-26] Prisma Version Downgrade
+- What: Downgraded Prisma from `8.0.0-rc.12` to `5.22.0`.
+- Why: The RC version removed the `migrate` command (replaced with `migration`) and using a pre-release version for a take-home assignment is risky due to potential undocumented breaking API changes.
+- Alternatives considered: Using `bunx prisma migration dev` and adapting to the v8 RC (rejected — too much risk of hitting other breaking changes in Prisma Client).
+
 ---
 
 ## [example — delete once real entries exist] Cursor pagination field choice
