@@ -14,6 +14,33 @@ export const collectionResolvers = {
       });
     },
   },
+  Mutation: {
+    createCollection: async (
+      _parent: unknown,
+      args: { name: string; slug: string },
+      context: GraphQLContext
+    ) => {
+      const { validateSlug } = await import('../validation/rules.js');
+      const { badInput } = await import('../errors/errors.js');
+      
+      validateSlug(args.slug);
+
+      try {
+        return await context.prisma.collection.create({
+          data: {
+            name: args.name,
+            slug: args.slug,
+          },
+        });
+      } catch (error: any) {
+        // Prisma throws P2002 if a unique constraint fails (e.g., duplicate slug)
+        if (error.code === 'P2002') {
+          throw badInput(`A collection with the slug '${args.slug}' already exists.`);
+        }
+        throw error;
+      }
+    },
+  },
   // We resolve the nested 'documents' field directly on the Collection type
   // This tells GraphQL how to get documents when someone asks for a collection's documents
   Collection: { // find document(files) inside collection(folder)
