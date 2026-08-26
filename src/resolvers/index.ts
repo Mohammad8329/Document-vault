@@ -4,6 +4,7 @@ import { documentResolvers } from './document.resolvers.js';
 export const resolvers = {
   Query: {
     ...collectionResolvers.Query,
+    ...documentResolvers.Query,
   },
   Mutation: {
     ...collectionResolvers.Mutation,
