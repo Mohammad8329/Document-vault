@@ -1,11 +1,11 @@
 // This is a STARTING POINT, not final — review with the agent, don't
 // just accept it. Ask: "why cuid for id? why @@index on these fields?"
 
-generator client {
+generator client { // interact with the database
   provider = "prisma-client-js"
 }
 
-datasource db {
+datasource db { // connect to the database
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
@@ -25,9 +25,10 @@ model Document {
   tags         String[]
   isArchived   Boolean    @default(false)
   createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId String
 
-  @@index([collectionId])
-  @@index([createdAt])
+  @@index([collectionId]) //find specific document
+  @@index([createdAt, id]) //pagination
 }

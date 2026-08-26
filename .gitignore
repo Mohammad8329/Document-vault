@@ -1,2 +1,6 @@
 #docs
 WORKFLOW.md
+.env
+node_modules
+dist
+.bun
