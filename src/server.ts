@@ -19,7 +19,7 @@ const schema = createSchema({
 });
 
 // Create the Yoga instance
-const yoga = createYoga({
+export const yoga = createYoga({
   schema,
   context: createContext,
 });

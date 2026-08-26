@@ -3,6 +3,7 @@ type Collection {
   name: String!
   slug: String!
   createdAt: String!
+  documents: [Document!]!
 }
 
 type Document {
