@@ -17,20 +17,20 @@ Last updated: 2026-08-26
       `updateDocument`, `deleteDocument`
 - [x] 6. `moveDocument` mutation
 - [x] 7. `documents` query — search + filter + cursor pagination
-- [ ] 8. Unit tests for resolvers
-- [ ] 9. Integration test(s) against Dockerized Postgres
-- [ ] 10. README (one-command setup + extension notes)
+- [x] 8. Unit tests for resolvers
+- [x] 9. Integration test(s) against Dockerized Postgres
+- [x] 10. README (one-command setup + extension notes)
 - [ ] 11. Bonus: sanity script / Dockerfile / GitHub Actions
 
 ## Current task in progress
 
-Phase 8 — Setting up the unit testing environment (Bun test) and mocking Prisma for the resolvers.
+Phase 11 — Implementing bonus tasks: sanity script, Dockerfile, and GitHub Actions workflow.
 
 ## Next task
 
-Phase 9 — Integration testing against Dockerized Postgres.
+Project Completion and Final Walkthrough.
 
 ## Known issues / TODO
 
 - PROGRESS.md and DECISIONS.md were neglected during the coding sprint, making sure to keep them updated now.
-- `ARCHITECTURE.md` defines `tests/` and a custom `README.md`, which are currently missing. These will be added in Phases 8, 9, and 10.
+- `ARCHITECTURE.md` defines `tests/` and a custom `README.md`, which have now been added.
