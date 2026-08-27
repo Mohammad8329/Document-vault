@@ -30,5 +30,5 @@ model Document {
   collectionId String
 
   @@index([collectionId]) //find specific document
-  @@index([createdAt, id]) //pagination
+  @@unique([createdAt, id]) //pagination
 }
