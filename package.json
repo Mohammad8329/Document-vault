@@ -5,11 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "bun --hot src/server.ts",
-    "gendb": "prisma migrate dev",
+    "gendb": "bunx prisma migrate dev",
     "test": "bun test",
     "test:integration": "bun test tests/integration",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
     "sanity": "bun run typecheck && bun run test"
   },
   "devDependencies": {

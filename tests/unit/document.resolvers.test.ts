@@ -13,7 +13,7 @@ describe('Document Resolvers', () => {
             findUnique: mock(async () => ({ id: 'c1' })), // simulate collection exists
           },
           document: {
-            create: mock(async () => mockDoc),
+            create: mock(async () => mockDoc as any),
           }
         }
       } as unknown as GraphQLContext;
@@ -25,7 +25,7 @@ describe('Document Resolvers', () => {
       );
       
       expect(mockContext.prisma.document.create).toHaveBeenCalled();
-      expect(result).toEqual(mockDoc);
+      expect(result).toEqual(mockDoc as any);
     });
 
     it('throws NOT_FOUND if collection does not exist', async () => {

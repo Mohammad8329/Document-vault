@@ -4,3 +4,8 @@ WORKFLOW.md
 node_modules
 dist
 .bun
+
+# Documentation files requested to be untracked
+ARCHITECTURE.md
+SPEC.md
+DECISIONS.md
