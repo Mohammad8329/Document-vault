@@ -32,7 +32,7 @@ Last updated: 2026-08-29
 
 - [x] 1. Scaffold Next.js 14 app inside `client/`, install Apollo Client,
       set up global CSS with design tokens and dark/light mode variables
-- [ ] 2. Build Sidebar + Dashboard layout using `collections` query
+- [x] 2. Build Sidebar + Dashboard layout using `collections` query
 - [ ] 3. Build Collection detail page (`/collections/[id]`) with `DocumentCard`
 - [ ] 4. Build `CreateCollectionForm` and `CreateDocumentForm` modals
 - [ ] 5. Wire up `updateDocument` (archive toggle), `deleteDocument`, `moveDocument` actions
@@ -41,11 +41,11 @@ Last updated: 2026-08-29
 
 ## Current task in progress
 
-Frontend Phase 2 — Sidebar + Dashboard layout with `collections` query.
+Frontend Phase 3 — Collection detail page (`/collections/[id]`) with `DocumentCard`.
 
 ## Next task
 
-Frontend Phase 3 — Collection detail page (`/collections/[id]`) with `DocumentCard`.
+Frontend Phase 4 — Document Creation & Editing Modals.
 
 ## Known issues / TODO
 

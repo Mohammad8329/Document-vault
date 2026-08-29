@@ -1,12 +1,24 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@apollo/client/react';
 import { GET_COLLECTIONS } from '@/graphql/operations';
-import { useTheme } from '@/context/ThemeContext';
-import { Sun, Moon, Database, Sparkles, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Sidebar } from '@/components/Sidebar';
+import { CreateCollectionModal } from '@/components/CreateCollectionModal';
+import {
+  FolderPlus,
+  Search,
+  FileText,
+  Archive,
+  ArrowUpRight,
+  Sparkles,
+  Layers,
+  FolderOpen,
+  Calendar
+} from 'lucide-react';
 
-interface CollectionItem {
+interface Collection {
   id: string;
   name: string;
   slug: string;
@@ -15,103 +27,256 @@ interface CollectionItem {
 }
 
 interface GetCollectionsData {
-  collections: CollectionItem[];
+  collections: Collection[];
 }
 
-export default function Home() {
-  const { theme, toggleTheme } = useTheme();
-  const { data, loading, error } = useQuery<GetCollectionsData>(GET_COLLECTIONS, {
-    fetchPolicy: 'network-only',
-    errorPolicy: 'all',
-  });
+export default function DashboardPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data, loading } = useQuery<GetCollectionsData>(GET_COLLECTIONS);
+
+  const collections = data?.collections || [];
+  const totalDocs = collections.reduce((acc, col) => acc + (col.documents?.length || 0), 0);
+  const totalArchived = collections.reduce(
+    (acc, col) => acc + (col.documents?.filter((d) => d.isArchived).length || 0),
+    0
+  );
+  const activeDocs = totalDocs - totalArchived;
 
   return (
-    <main style={{ minHeight: '100vh', width: '100%', padding: '40px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ maxWidth: '800px', width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        {/* Header / Theme switch */}
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px' }} className="glass-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--accent-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-              <Database size={22} />
-            </div>
-            <div>
-              <h1 style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Document Vault</h1>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Phase 1 Frontend Verification</p>
-            </div>
-          </div>
+    <div style={{ display: 'flex', width: '100%', minHeight: '100vh' }}>
+      <Sidebar onOpenCreateCollection={() => setIsModalOpen(true)} />
 
-          <button onClick={toggleTheme} className="btn btn-secondary" style={{ padding: '8px 14px' }}>
-            {theme === 'dark' ? <Sun size={16} color="var(--warning)" /> : <Moon size={16} color="var(--accent-primary)" />}
-            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-          </button>
-        </header>
-
-        {/* Status Verification Card */}
-        <section className="glass-card" style={{ padding: '28px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-            <Sparkles size={20} color="var(--accent-primary)" />
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>System & Connectivity Check</h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-            <div style={{ padding: '16px', borderRadius: 'var(--radius-md)', background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 700 }}>Design System</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--success)', fontWeight: 600 }}>
-                <CheckCircle2 size={16} /> Ready (CSS Tokens)
+      <main style={{ flex: 1, padding: '36px 40px', overflowY: 'auto' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          {/* Top Banner / Welcome */}
+          <div
+            className="glass-card"
+            style={{
+              padding: '32px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              background: 'linear-gradient(135deg, var(--surface-card) 0%, var(--bg-tertiary) 100%)',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            <div style={{ position: 'relative', zIndex: 2, maxWidth: '620px' }}>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '4px 12px',
+                  borderRadius: 'var(--radius-full)',
+                  background: 'var(--accent-glow)',
+                  color: 'var(--accent-primary)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  marginBottom: '12px',
+                }}
+              >
+                <Sparkles size={14} />
+                <span>Next-Gen Document Vault</span>
               </div>
-            </div>
-
-            <div style={{ padding: '16px', borderRadius: 'var(--radius-md)', background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 700 }}>Active Theme</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
-                <span className={`badge ${theme === 'dark' ? 'badge-tag' : 'badge-active'}`}>{theme.toUpperCase()}</span>
-              </div>
-            </div>
-
-            <div style={{ padding: '16px', borderRadius: 'var(--radius-md)', background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 700 }}>Backend GraphQL</div>
-              <div>
-                {loading && <span style={{ color: 'var(--text-muted)' }}>Checking connection...</span>}
-                {!loading && error && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--danger)', fontWeight: 600, fontSize: '0.85rem' }}>
-                    <ShieldAlert size={16} /> Disconnected (Start server)
-                  </span>
-                )}
-                {!loading && data && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--success)', fontWeight: 600 }}>
-                    <CheckCircle2 size={16} /> Connected (Yoga 4000)
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* GraphQL Data Preview */}
-          <div style={{ padding: '16px', borderRadius: 'var(--radius-md)', background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
-            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '10px' }}>Backend Response (`collections` query)</h3>
-            {loading && <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Loading collections from GraphQL endpoint...</p>}
-            {!loading && error && (
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                GraphQL server is not reachable on port 4000. Start it with <code>bun run dev</code> in the project root.
+              <h1 style={{ fontSize: '1.85rem', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.2, marginBottom: '10px' }}>
+                Secure Document Repository
+              </h1>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.94rem', lineHeight: 1.6 }}>
+                Organize company specifications, engineering docs, and archives into structured GraphQL vaults with real-time substring search.
               </p>
-            )}
-            {!loading && data?.collections && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                  Found <strong>{data.collections.length}</strong> collection(s) in PostgreSQL database:
-                </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {data.collections.map((col) => (
-                    <span key={col.id} className="badge badge-tag" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>
-                      📁 {col.name} (<code>/{col.slug}</code>)
-                    </span>
-                  ))}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', position: 'relative', zIndex: 2 }}>
+              <button onClick={() => setIsModalOpen(true)} className="btn btn-primary" style={{ padding: '12px 20px' }}>
+                <FolderPlus size={18} />
+                <span>New Vault</span>
+              </button>
+
+              <Link href="/search" className="btn btn-secondary" style={{ padding: '12px 20px' }}>
+                <Search size={18} />
+                <span>Search All</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Quick Analytics Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
+            <div className="glass-card" style={{ padding: '22px 24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>TOTAL VAULTS</span>
+                <div style={{ padding: '8px', borderRadius: 'var(--radius-md)', background: 'rgba(99, 102, 241, 0.12)', color: 'var(--accent-primary)' }}>
+                  <Layers size={18} />
                 </div>
               </div>
-            )}
+              <div style={{ fontSize: '2rem', fontWeight: 800 }}>{collections.length}</div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Top-level collections</span>
+            </div>
+
+            <div className="glass-card" style={{ padding: '22px 24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>ACTIVE DOCUMENTS</span>
+                <div style={{ padding: '8px', borderRadius: 'var(--radius-md)', background: 'var(--success-bg)', color: 'var(--success)' }}>
+                  <FileText size={18} />
+                </div>
+              </div>
+              <div style={{ fontSize: '2rem', fontWeight: 800 }}>{activeDocs}</div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Available across all vaults</span>
+            </div>
+
+            <div className="glass-card" style={{ padding: '22px 24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>ARCHIVED DOCUMENTS</span>
+                <div style={{ padding: '8px', borderRadius: 'var(--radius-md)', background: 'var(--warning-bg)', color: 'var(--warning)' }}>
+                  <Archive size={18} />
+                </div>
+              </div>
+              <div style={{ fontSize: '2rem', fontWeight: 800 }}>{totalArchived}</div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Preserved records</span>
+            </div>
           </div>
-        </section>
-      </div>
-    </main>
+
+          {/* Vaults Grid Section */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+              <div>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>All Vaults</h2>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Select a collection to view and manage its documents</p>
+              </div>
+
+              <button onClick={() => setIsModalOpen(true)} className="btn btn-secondary" style={{ padding: '8px 14px', fontSize: '0.82rem' }}>
+                <FolderPlus size={16} />
+                <span>Create Vault</span>
+              </button>
+            </div>
+
+            {loading && (
+              <div className="glass-card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                Loading collections from database...
+              </div>
+            )}
+
+            {!loading && collections.length === 0 && (
+              <div
+                className="glass-card"
+                style={{
+                  padding: '48px 24px',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '14px',
+                }}
+              >
+                <div
+                  style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: 'var(--radius-lg)',
+                    background: 'var(--bg-secondary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--text-muted)',
+                  }}
+                >
+                  <FolderOpen size={28} />
+                </div>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>No Vaults Created Yet</h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '400px' }}>
+                  Create your first collection to start storing and organizing your markdown documents.
+                </p>
+                <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">
+                  <FolderPlus size={16} />
+                  <span>Create First Vault</span>
+                </button>
+              </div>
+            )}
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: '18px' }}>
+              {collections.map((col) => {
+                const docCount = col.documents?.length || 0;
+                const dateFormatted = new Date(Number(col.createdAt) || col.createdAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                });
+
+                return (
+                  <Link
+                    key={col.id}
+                    href={`/collections/${col.id}`}
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    <div
+                      className="glass-card"
+                      style={{
+                        padding: '22px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        height: '100%',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+                          <div
+                            style={{
+                              width: '42px',
+                              height: '42px',
+                              borderRadius: 'var(--radius-md)',
+                              background: 'var(--accent-glow)',
+                              color: 'var(--accent-primary)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <FolderOpen size={22} />
+                          </div>
+
+                          <span className="btn-icon" style={{ opacity: 0.7 }}>
+                            <ArrowUpRight size={18} />
+                          </span>
+                        </div>
+
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '6px' }}>{col.name}</h3>
+                        <p style={{ fontSize: '0.78rem', color: 'var(--accent-primary)', fontFamily: 'monospace', marginBottom: '14px' }}>
+                          /{col.slug}
+                        </p>
+                      </div>
+
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          paddingTop: '14px',
+                          borderTop: '1px solid var(--border-subtle)',
+                          fontSize: '0.78rem',
+                          color: 'var(--text-muted)',
+                        }}
+                      >
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <Calendar size={14} />
+                          {dateFormatted}
+                        </span>
+
+                        <span className="badge badge-tag">
+                          {docCount} {docCount === 1 ? 'Document' : 'Documents'}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <CreateCollectionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </div>
   );
 }
