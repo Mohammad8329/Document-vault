@@ -36,16 +36,16 @@ Last updated: 2026-08-29
 - [x] 3. Build Collection detail page (`/collections/[id]`) with `DocumentCard`
 - [x] 4. Build `CreateCollectionForm` and `CreateDocumentForm` modals
 - [x] 5. Wire up `updateDocument` (archive toggle), `deleteDocument`, `moveDocument` actions
-- [ ] 6. Build `/search` page with debounced search + cursor "Load More" pagination
-- [ ] 7. Polish — dark/light mode, animations, responsive layout, update README
+- [x] 6. Build `/search` page with debounced search + cursor "Load More" pagination
+- [x] 7. Polish — dark/light mode, animations, responsive layout, update README
 
 ## Current task in progress
 
-Frontend Phase 6 — Global `/search` page with debounced search + cursor "Load More" pagination.
+Frontend Deliverables Complete.
 
 ## Next task
 
-Frontend Phase 7 — Final polish and README update.
+All phases complete!
 
 ## Known issues / TODO
 

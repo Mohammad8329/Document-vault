@@ -35,6 +35,30 @@ The GraphQL interactive playground (GraphiQL) will be instantly available at:
 
 ---
 
+## Frontend Web Client (Next.js 14 App Router)
+
+A full-stack, responsive web application for interacting with the Document Vault GraphQL API is located in the `client/` directory.
+
+### Running the Frontend:
+
+1. Open a new terminal in the `client/` folder:
+   ```bash
+   cd client
+   bun install
+   bun run dev
+   ```
+2. Open your browser and navigate to:
+   **[http://localhost:3000](http://localhost:3000)**
+
+### Key Frontend Features:
+- **Vault Management**: Visual dashboard for browsing, creating, and inspecting vaults.
+- **Document Studio**: Full CRUD interface for creating, editing, archiving, and moving markdown documents between collections.
+- **Global Search**: Real-time debounced substring search across all document titles and contents with live filters.
+- **Cursor Pagination**: "Load More" interface powered by GraphQL cursor-based pagination.
+- **Theme Support**: Seamless dark and light mode toggle with glassmorphism aesthetics.
+
+---
+
 ## Testing & CI
 
 We use `bun:test` to ensure maximum stability. The project is split into two test suites:
